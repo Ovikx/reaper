@@ -27,7 +27,7 @@ jobs:
           node-version: 18
           cache: "npm"
       - run: npm ci
-      - run: eslint src/
+      - run: npx eslint src/
 
   format:
     needs: setup
@@ -39,7 +39,7 @@ jobs:
           node-version: 18
           cache: "npm"
       - run: npm ci
-      - run: prettier --check .
+      - run: npx prettier --check .
 
   build:
     needs: setup
@@ -51,4 +51,4 @@ jobs:
           node-version: 18
           cache: "npm"
       - run: npm ci
-      - run: vite build
+      - run: npx vite build
