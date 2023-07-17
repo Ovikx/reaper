@@ -11,20 +11,35 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/setup
-      - run: npx eslint src/
+
+      - name: Run ESLint
+        run: npx eslint src/
 
   format:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/setup
-      - run: npx prettier --check .
+
+      - name: Run Prettier
+        run: npx prettier --check .
 
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/setup
-      - run: npx vite build
+
+      - name: Build with Vite
+        run: npx vite build
