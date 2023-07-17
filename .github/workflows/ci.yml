@@ -23,18 +23,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npx eslint src/
+      - run: eslint src/
 
   format:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npx prettier --check .
+      - run: prettier --check .
 
   build:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npx vite build
+      - run: vite build
