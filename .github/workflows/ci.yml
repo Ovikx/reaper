@@ -8,47 +8,23 @@ on:
       - main
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: "npm"
-      - run: npm ci
-
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: "npm"
-      - run: npm ci
+      - name: Setup
+        uses: ./.github/actions/setup
       - run: npx eslint src/
 
   format:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: "npm"
-      - run: npm ci
+      - name: Setup
+        uses: ./.github/actions/setup
       - run: npx prettier --check .
 
   build:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: "npm"
-      - run: npm ci
+      - name: Setup
+        uses: ./.github/actions/setup
       - run: npx vite build
