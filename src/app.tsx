@@ -18,7 +18,7 @@ export function App() {
 
   const onReadClick = () => {
     sessionStore
-      .getByKey("test")
+      .getOne("id", "test")
       .then((res) => res && setActiveRec(res))
       .catch((err) => console.log(err));
   };
