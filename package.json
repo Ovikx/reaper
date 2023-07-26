@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/chrome": "^0.0.242",
     "agile-store": "^0.2.0",
     "preact": "^10.15.1"
   },

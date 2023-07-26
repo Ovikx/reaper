@@ -5,5 +5,8 @@
   "action": {
     "default_popup": "index.html",
     "default_title": "Active Mortality"
+  },
+  "background": {
+    "service_worker": "worker.js"
   }
 }
