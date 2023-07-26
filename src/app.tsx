@@ -24,21 +24,23 @@ export function App() {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen items-center flex flex-col">
-      <h1 className="text-white p-10">Hello world!</h1>
-      <button
-        onClick={onSubmitClick}
-        className="text-white border-2 border-white p-2"
-      >
-        ADD A RANDOM ONE
-      </button>
-      <button
-        className="text-white p-2 mt-3 border-white border-2"
-        onClick={onReadClick}
-      >
-        READ THE LATEST
-      </button>
-      {activeRec && <h1 className="text-white p-5">{activeRec.timeSpent}</h1>}
+    <div className="bg-gray-900 w-[300px] h-[300px]">
+      <div className="flex flex-col items-center">
+        <h1 className="text-white p-10 mx-auto">Hello world!</h1>
+        <button
+          onClick={onSubmitClick}
+          className="text-white border-2 border-white p-2"
+        >
+          ADD A RANDOM ONE
+        </button>
+        <button
+          className="text-white p-2 mt-3 border-white border-2"
+          onClick={onReadClick}
+        >
+          READ THE LATEST
+        </button>
+        {activeRec && <h1 className="text-white p-5">{activeRec.timeSpent}</h1>}
+      </div>
     </div>
   );
 }
