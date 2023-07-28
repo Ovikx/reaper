@@ -7,6 +7,9 @@
     "default_title": "Active Mortality"
   },
   "background": {
-    "service_worker": "worker.js"
-  }
+    "service_worker": "worker.js",
+    "type": "module"
+  },
+  "permissions": ["tabs", "storage", "scripting", "activeTab"],
+  "host_permissions": ["https://*/*"]
 }

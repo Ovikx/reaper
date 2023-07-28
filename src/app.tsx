@@ -1,4 +1,3 @@
-import "./index.css";
 import { sessionStore } from "./db/db";
 import { useState } from "preact/hooks";
 import { Session } from "./types/types";
@@ -9,9 +8,8 @@ export function App() {
     sessionStore
       .put({
         id: "test",
-        timeSpent: Math.random(),
         timeStarted: Math.random(),
-        websiteURL: "test.com",
+        url: "test.com",
       })
       .catch((err) => console.log(err));
   };
@@ -39,7 +37,9 @@ export function App() {
         >
           READ THE LATEST
         </button>
-        {activeRec && <h1 className="text-white p-5">{activeRec.timeSpent}</h1>}
+        {activeRec && (
+          <h1 className="text-white p-5">{activeRec.timeStarted}</h1>
+        )}
       </div>
     </div>
   );

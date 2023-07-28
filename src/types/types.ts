@@ -1,6 +1,10 @@
 export interface Session {
   id: string;
-  websiteURL: string;
+  url: string;
   timeStarted: number;
-  timeSpent: number;
+  timeEnded?: number;
+}
+
+export interface SiteBlacklist {
+  blacklist: string[];
 }
