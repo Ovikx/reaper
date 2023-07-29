@@ -1,10 +1,11 @@
 import { Session } from "../types/types";
+//import { TabCacheKey } from "./types";
 
 export class TabCache {
-  _cache: Map<string, Session>;
+  cache: Map<number, Session>;
 
   constructor() {
-    this._cache = new Map<string, Session>();
+    this.cache = new Map<number, Session>();
   }
 }
 

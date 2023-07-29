@@ -8,7 +8,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         index: "index.html",
-        worker: "src/service/worker.ts",
+        worker: "src/service/mainWorker.ts",
       },
       output: {
         entryFileNames: "[name].js",

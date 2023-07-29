@@ -2,6 +2,12 @@
   "manifest_version": 3,
   "name": "Active Mortality",
   "version": "0.1.0",
+  "icons": {
+    "16": "skull16.png",
+    "48": "skull48.png",
+    "128": "skull128.png",
+    "256": "skull256.png"
+  },
   "action": {
     "default_popup": "index.html",
     "default_title": "Active Mortality"
@@ -10,6 +16,9 @@
     "service_worker": "worker.js",
     "type": "module"
   },
-  "permissions": ["tabs", "storage", "scripting", "activeTab"],
-  "host_permissions": ["https://*/*"]
+  "permissions": ["tabs", "storage", "notifications", "activeTab"],
+  "host_permissions": ["https://*/*"],
+  "web_accessible_resources": [
+    { "resources": ["/skull.svg"], "matches": ["<all_urls>"] }
+  ]
 }

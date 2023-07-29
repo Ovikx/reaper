@@ -4,7 +4,3 @@ export interface Session {
   timeStarted: number;
   timeEnded?: number;
 }
-
-export interface SiteBlacklist {
-  blacklist: string[];
-}
