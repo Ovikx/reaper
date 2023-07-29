@@ -2,7 +2,7 @@ import { SiteBlacklist } from "../types";
 import { elementContained } from "../helpers";
 import { tabCache } from "../../caches/tabCache";
 import { sessionStore } from "../../db/db";
-import { whitelistCache } from "../../caches/whitelistCache";
+import { tempCache } from "../../caches/SessionCache";
 
 // Tab event listeners
 export const onUpdated = chrome.tabs.onUpdated.addListener(
@@ -33,7 +33,7 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
       if (
         matched &&
         currentSession?.url != matched &&
-        !whitelistCache.cache.has(matched)
+        !(await tempCache.get("whitelist"))["whitelist"].includes(matched)
       ) {
         console.log("UNPRODUCTIVE WEBSITE!!");
 
