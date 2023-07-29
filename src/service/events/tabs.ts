@@ -1,6 +1,8 @@
 import { SiteBlacklist } from "../types";
 import { elementContained } from "../helpers";
 import { tabCache } from "../../caches/tabCache";
+import { sessionStore } from "../../db/db";
+import { whitelistCache } from "../../caches/whitelistCache";
 
 // Tab event listeners
 export const onUpdated = chrome.tabs.onUpdated.addListener(
@@ -13,41 +15,64 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
     if (changeInfo.status == "complete" && tab.id) {
       // Get the matched blacklist website for storage purposes
       const matched = elementContained(blacklist, tab.url!);
+      const currentSession = tabCache.cache.get(tab.id);
 
-      if (matched) {
-        // Only start a session and fire notif if this tab was originally clean
-        for (const entry of tabCache.cache.entries()) {
-          console.log(entry);
-        }
-        if (!tabCache.cache.has(tab.id)) {
-          console.log("UNPRODUCTIVE WEBSITE!!");
-
-          // Add the session to the tab cache
-          tabCache.cache.set(tab.id, {
-            id: `${matched}:${Date.now()}`,
-            timeStarted: Date.now(),
-            url: matched,
-            timeEnded: undefined,
-          });
-
-          chrome.notifications.create(tabId.toString(), {
-            buttons: [
-              { title: "Alright, get me out of here" },
-              {
-                title: "I swear on my life this is productive!",
-              },
-            ],
-            iconUrl: "skull256.png",
-            message: "You don't have much time left!",
-            title: "ALERT",
-            type: "progress",
-            progress: 90,
-            priority: 2,
-            requireInteraction: true,
-            silent: false,
+      // If the tab is already in the cache, there's a possibility we can end the session
+      if (currentSession) {
+        // Only end the session if the user goes to a different site
+        if (currentSession.url != matched) {
+          tabCache.cache.delete(tab.id);
+          sessionStore.add({
+            ...currentSession,
+            timeEnded: Date.now(),
           });
         }
+      }
+
+      console.log(currentSession?.url, matched);
+      if (
+        matched &&
+        currentSession?.url != matched &&
+        !whitelistCache.cache.has(matched)
+      ) {
+        console.log("UNPRODUCTIVE WEBSITE!!");
+
+        // Add the session to the tab cache
+        tabCache.cache.set(tab.id, {
+          id: `${matched}:${Date.now()}`,
+          timeStarted: Date.now(),
+          url: matched,
+          timeEnded: undefined,
+        });
+
+        // Fire notif
+        const options: chrome.notifications.NotificationOptions<true> = {
+          buttons: [
+            { title: "Alright, get me out of here" },
+            {
+              title: "I swear on my life this is productive!",
+            },
+          ],
+          iconUrl: "skull256.png",
+          message: `You don't have much time left!`,
+          title: "ALERT",
+          type: "progress",
+          progress: 90,
+          priority: 2,
+          requireInteraction: true,
+          silent: false,
+        };
+
+        chrome.notifications.create(tabId.toString(), options);
       }
     }
   },
 );
+
+export const onRemoved = chrome.tabs.onRemoved.addListener((tabId) => {
+  const session = tabCache.cache.get(tabId);
+  if (session) {
+    sessionStore.add({ ...session, timeEnded: Date.now() });
+    tabCache.cache.delete(tabId);
+  }
+});
