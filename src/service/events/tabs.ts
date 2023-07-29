@@ -1,7 +1,7 @@
 import { SiteBlacklist } from "../types";
 import { elementContained } from "../helpers";
 import { sessionStore } from "../../db/db";
-import { getSession } from "../storageUtils";
+import { getSession, getTempWhitelist, setSession } from "../storageUtils";
 
 // Tab event listeners
 export const onUpdated = chrome.tabs.onUpdated.addListener(
@@ -35,20 +35,16 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
       if (
         matched &&
         currentSession?.url != matched &&
-        !(await chrome.storage.session.get("whitelist"))["whitelist"].includes(
-          matched,
-        )
+        !((await getTempWhitelist()) ?? [""]).includes(matched)
       ) {
         console.log("UNPRODUCTIVE WEBSITE!!");
 
         // Add the session to the tab cache
-        chrome.storage.session.set({
-          [tab.id.toString()]: {
-            id: `${matched}:${Date.now()}`,
-            timeStarted: Date.now(),
-            url: matched,
-            timeEnded: undefined,
-          },
+        setSession(tab.id.toString(), {
+          id: `${matched}:${Date.now()}`,
+          timeStarted: Date.now(),
+          url: matched,
+          timeEnded: undefined,
         });
 
         // Fire notif

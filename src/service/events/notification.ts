@@ -1,4 +1,8 @@
-import { getSession } from "../storageUtils";
+import {
+  addToTempWhitelist,
+  getSession,
+  getTempWhitelist,
+} from "../storageUtils";
 
 export const onButtonClicked = chrome.notifications.onButtonClicked.addListener(
   async (notificationId, buttonIndex) => {
@@ -19,13 +23,8 @@ export const onButtonClicked = chrome.notifications.onButtonClicked.addListener(
       case 1: {
         const session = await getSession(notificationId);
         if (session) {
-          const whitelist = await chrome.storage.session.get("whitelist");
-          await chrome.storage.session.set({
-            whitelist: [...(whitelist["whitelist"] ?? []), session.url],
-          });
-          console.log(
-            (await chrome.storage.session.get("whitelist"))["whitelist"],
-          );
+          await addToTempWhitelist(session.url);
+          console.log(await getTempWhitelist());
         }
       }
     }
