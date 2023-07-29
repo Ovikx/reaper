@@ -1,5 +1,4 @@
-import { tempCache } from "../../caches/SessionCache";
-import { tabCache } from "../../caches/tabCache";
+import { getSession } from "../storageUtils";
 
 export const onButtonClicked = chrome.notifications.onButtonClicked.addListener(
   async (notificationId, buttonIndex) => {
@@ -16,18 +15,17 @@ export const onButtonClicked = chrome.notifications.onButtonClicked.addListener(
         break;
       }
 
-      // User exempts the current website
+      // User whitelists the current website temporarily
       case 1: {
-        const session = tabCache.cache.get(parseInt(notificationId));
-        // if (session) whitelistCache.cache.add(session.url);
-        // tabCache.cache.delete(parseInt(notificationId));
+        const session = await getSession(notificationId);
         if (session) {
-          const whitelist = await tempCache.get("whitelist");
-          console.log(whitelist);
-          await tempCache.set({
+          const whitelist = await chrome.storage.session.get("whitelist");
+          await chrome.storage.session.set({
             whitelist: [...(whitelist["whitelist"] ?? []), session.url],
           });
-          console.log((await tempCache.get("whitelist"))["whitelist"]);
+          console.log(
+            (await chrome.storage.session.get("whitelist"))["whitelist"],
+          );
         }
       }
     }

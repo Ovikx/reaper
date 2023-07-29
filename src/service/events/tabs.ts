@@ -1,8 +1,7 @@
 import { SiteBlacklist } from "../types";
 import { elementContained } from "../helpers";
-import { tabCache } from "../../caches/tabCache";
 import { sessionStore } from "../../db/db";
-import { tempCache } from "../../caches/SessionCache";
+import { getSession } from "../storageUtils";
 
 // Tab event listeners
 export const onUpdated = chrome.tabs.onUpdated.addListener(
@@ -15,34 +14,41 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
     if (changeInfo.status == "complete" && tab.id) {
       // Get the matched blacklist website for storage purposes
       const matched = elementContained(blacklist, tab.url!);
-      const currentSession = tabCache.cache.get(tab.id);
+      //const currentSession = tabCache.cache.get(tab.id);
+      const currentSession = await getSession(tab.id.toString());
 
       // If the tab is already in the cache, there's a possibility we can end the session
-      if (currentSession) {
-        // Only end the session if the user goes to a different site
-        if (currentSession.url != matched) {
-          tabCache.cache.delete(tab.id);
-          sessionStore.add({
+      // Only end the session if the user goes to a different site
+      if (currentSession && currentSession.url != matched) {
+        chrome.storage.session.remove(tab.id.toString());
+        // TODO: only add to store if site isn't in the whitelist
+        sessionStore
+          .add({
             ...currentSession,
             timeEnded: Date.now(),
-          });
-        }
+          })
+          .then(() =>
+            console.log(`Added ${currentSession.id} to store on tab update`),
+          );
       }
 
-      console.log(currentSession?.url, matched);
       if (
         matched &&
         currentSession?.url != matched &&
-        !(await tempCache.get("whitelist"))["whitelist"].includes(matched)
+        !(await chrome.storage.session.get("whitelist"))["whitelist"].includes(
+          matched,
+        )
       ) {
         console.log("UNPRODUCTIVE WEBSITE!!");
 
         // Add the session to the tab cache
-        tabCache.cache.set(tab.id, {
-          id: `${matched}:${Date.now()}`,
-          timeStarted: Date.now(),
-          url: matched,
-          timeEnded: undefined,
+        chrome.storage.session.set({
+          [tab.id.toString()]: {
+            id: `${matched}:${Date.now()}`,
+            timeStarted: Date.now(),
+            url: matched,
+            timeEnded: undefined,
+          },
         });
 
         // Fire notif
@@ -69,10 +75,13 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
   },
 );
 
-export const onRemoved = chrome.tabs.onRemoved.addListener((tabId) => {
-  const session = tabCache.cache.get(tabId);
+export const onRemoved = chrome.tabs.onRemoved.addListener(async (tabId) => {
+  const session = await getSession(tabId.toString());
   if (session) {
-    sessionStore.add({ ...session, timeEnded: Date.now() });
-    tabCache.cache.delete(tabId);
+    // TODO: check that session url isn't in the whitelist before adding to store
+    sessionStore
+      .add({ ...session, timeEnded: Date.now() })
+      .then(() => console.log(`Added ${session.id} to store on tab remove`));
+    chrome.storage.session.remove(tabId.toString());
   }
 });
