@@ -1,6 +1,6 @@
 import { SiteBlacklist } from "../types";
 import { elementContained } from "../helpers";
-import { tabCache } from "../tabCache";
+import { tabCache } from "../../caches/tabCache";
 
 // Tab event listeners
 export const onUpdated = chrome.tabs.onUpdated.addListener(
@@ -21,6 +21,8 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
         }
         if (!tabCache.cache.has(tab.id)) {
           console.log("UNPRODUCTIVE WEBSITE!!");
+
+          // Add the session to the tab cache
           tabCache.cache.set(tab.id, {
             id: `${matched}:${Date.now()}`,
             timeStarted: Date.now(),

@@ -1,7 +1,6 @@
 import { Session } from "../types/types";
-//import { TabCacheKey } from "./types";
 
-export class TabCache {
+class TabCache {
   cache: Map<number, Session>;
 
   constructor() {
@@ -9,4 +8,5 @@ export class TabCache {
   }
 }
 
+/** Maps tab ID to Session object */
 export const tabCache = new TabCache();
