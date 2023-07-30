@@ -1,7 +1,6 @@
 import { sessionStore } from "./db/db";
 import { useState } from "preact/hooks";
 import { Session } from "./types/types";
-import { OverviewPage } from "./pages/Overview";
 
 export function App() {
   const [activeRec, setActiveRec] = useState<Session>();
@@ -42,7 +41,6 @@ export function App() {
           <h1 className="text-white p-5">{activeRec.timeStarted}</h1>
         )}
       </div>
-      <OverviewPage />
     </div>
   );
 }

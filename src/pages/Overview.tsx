@@ -3,6 +3,7 @@ import { useState } from "preact/hooks";
 import { defaultBirthYear } from "../constants";
 import { getBirthYear } from "../service/storageUtils";
 import { sessionStore } from "../db/db";
+import { Link } from "react-router-dom";
 
 const weekMs = 604800000;
 
@@ -29,8 +30,12 @@ export function OverviewPage() {
     setRecentTime(totalRecent);
   });
   return (
-    <>
-      <div></div>
-    </>
+    <div>
+      <li>
+        <Link to="/test">
+          <p className="text-white text-2xl font-medium">GO TO TEST PAGE</p>
+        </Link>
+      </li>
+    </div>
   );
 }
