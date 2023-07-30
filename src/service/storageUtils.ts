@@ -38,3 +38,7 @@ export async function addToTempWhitelist(url: string) {
     whitelist: [...(whitelist ?? []), url],
   });
 }
+
+export async function getBirthYear(): Promise<number> {
+  return (await chrome.storage.session.get("birthYear"))["birthYear"];
+}
