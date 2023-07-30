@@ -6,3 +6,8 @@ export const sessionStore = new Store<Session>({
   name: "sessions",
   indices: ["timeEnded", "timeStarted", "url"],
 });
+
+export const dbConfig = {
+  dbName: "am",
+  version: 1,
+};
