@@ -1,7 +1,8 @@
 import { SiteBlacklist } from "../types";
 import { elementContained } from "../helpers";
-import { sessionStore } from "../../db/db";
+import { dbConfig, sessionStore } from "../../db/db";
 import { getSession, getTempWhitelist, setSession } from "../storageUtils";
+import { useStore } from "agile-store";
 
 // Tab event listeners
 export const onUpdated = chrome.tabs.onUpdated.addListener(
@@ -22,7 +23,7 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
       if (currentSession && currentSession.url != matched) {
         chrome.storage.session.remove(tab.id.toString());
         // TODO: only add to store if site isn't in the whitelist
-        sessionStore
+        (await useStore(sessionStore, dbConfig))
           .add({
             ...currentSession,
             timeEnded: Date.now(),
@@ -75,7 +76,7 @@ export const onRemoved = chrome.tabs.onRemoved.addListener(async (tabId) => {
   const session = await getSession(tabId.toString());
   if (session) {
     // TODO: check that session url isn't in the whitelist before adding to store
-    sessionStore
+    (await useStore(sessionStore, dbConfig))
       .add({ ...session, timeEnded: Date.now() })
       .then(() => console.log(`Added ${session.id} to store on tab remove`));
     chrome.storage.session.remove(tabId.toString());
