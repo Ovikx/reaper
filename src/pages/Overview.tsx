@@ -60,7 +60,7 @@ export function OverviewPage() {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="mt-3">
+      <div className="mt-5">
         <UnitSelector
           selectedUnit={selectedUnit}
           setSelectedUnit={setSelectedUnit}
@@ -70,19 +70,20 @@ export function OverviewPage() {
         <h1 className="text-red-600 text-4xl font-black font-sans">
           {Math.floor(msLeft / factors[selectedUnit])}
         </h1>
-        <p className="text-gray-300 text-lg font-bold font-sans">
+        <p className="text-gray-300 text-md font-bold font-sans">
           {unitToString[selectedUnit]} LEFT UNTIL DEATH
         </p>
-        <h1 className="text-red-600 text-4xl font-black font-sans">
-          {Math.floor(recentTime / factors[selectedUnit])}
+        <hr className="w-full mt-2 border-gray-600"></hr>
+        <h1 className="text-red-600 text-3xl font-black font-sans mt-4">
+          {Math.ceil(recentTime / factors[selectedUnit])}
         </h1>
-        <p className="text-gray-300 text-lg font-bold font-sans">
+        <p className="text-gray-300 text-md font-semibold font-sans">
           WASTED THIS WEEK
         </p>
-        <h1 className="text-red-600 text-4xl font-black font-sans">
-          {Math.floor(allTime / factors[selectedUnit])}
+        <h1 className="text-red-600 text-3xl font-black font-sans mt-4">
+          {Math.ceil(allTime / factors[selectedUnit])}
         </h1>
-        <p className="text-gray-300 text-lg font-bold font-sans">
+        <p className="text-gray-300 text-md font-semibold font-sans">
           WASTED IN TOTAL
         </p>
       </div>

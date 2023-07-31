@@ -19,7 +19,7 @@ const router = createMemoryRouter([
 
 createStores("am", 1, [sessionStore]).then(() => {
   render(
-    <div className="bg-gray-900 w-[300px] h-[300px]">
+    <div className="bg-gray-900 w-[300px] h-[350px]">
       <RouterProvider router={router} />
     </div>,
     document.getElementById("app")!,
