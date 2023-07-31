@@ -31,6 +31,11 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
           .then(() =>
             console.log(`Added ${currentSession.id} to store on tab update`),
           );
+
+        // Clear active notification if new URL is clean
+        if (matched == undefined) {
+          chrome.notifications.clear(tab.id.toString());
+        }
       }
 
       if (
