@@ -85,5 +85,6 @@ export const onRemoved = chrome.tabs.onRemoved.addListener(async (tabId) => {
       .add({ ...session, timeEnded: Date.now() })
       .then(() => console.log(`Added ${session.id} to store on tab remove`));
     chrome.storage.session.remove(tabId.toString());
+    chrome.notifications.clear(tabId.toString());
   }
 });
