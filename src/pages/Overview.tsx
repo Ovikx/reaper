@@ -1,19 +1,31 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useMemo, useEffect } from "preact/hooks";
-import { AVG_LIFESPAN, defaultBirthYear } from "../constants";
 import { getBirthYear } from "../service/storageUtils";
 import { sessionStore } from "../db/db";
-import { Link } from "react-router-dom";
 import { getMsLeft } from "../utils";
+import { UnitSelector } from "../components/UnitSelector";
+
+export type TimeUnit = "H" | "M" | "S";
 
 const weekMs = 604800000;
 const interval = 1000; // ms
+const factors: Record<TimeUnit, number> = {
+  H: 1000 * 60 * 60,
+  M: 1000 * 60,
+  S: 1000,
+};
+
+const unitToString: Record<TimeUnit, string> = {
+  H: "HOURS",
+  M: "MINUTES",
+  S: "SECONDS",
+};
 
 export function OverviewPage() {
-  const [birthYear, setBirthYear] = useState(defaultBirthYear());
   const [allTime, setAllTime] = useState(0);
   const [recentTime, setRecentTime] = useState(0);
   const [msLeft, setMsLeft] = useState(0);
+  const [selectedUnit, setSelectedUnit] = useState<TimeUnit>("S");
+
   useMemo(() => {
     sessionStore.getMany("timeEnded", { upper: Date.now() }).then((res) => {
       let totalAll = 0;
@@ -42,24 +54,36 @@ export function OverviewPage() {
     return () => clearInterval(intervalId);
   }, [msLeft]);
 
-  const secondsLeft = Math.floor(msLeft / 1000);
-
   getBirthYear().then((res) => {
-    setBirthYear(res);
     setMsLeft(getMsLeft(res));
   });
 
   return (
     <div className="flex flex-col items-center">
-      <Link to="/test">
-        <p className="text-white text-2xl font-medium">GO TO TEST PAGE</p>
-      </Link>
+      <div className="mt-3">
+        <UnitSelector
+          selectedUnit={selectedUnit}
+          setSelectedUnit={setSelectedUnit}
+        />
+      </div>
       <div className="mt-5 flex flex-col items-center justify-center">
         <h1 className="text-red-600 text-4xl font-black font-sans">
-          {secondsLeft}
+          {Math.floor(msLeft / factors[selectedUnit])}
         </h1>
-        <p className="text-gray-300 text-xl font-bold font-sans">
-          seconds left until death...
+        <p className="text-gray-300 text-lg font-bold font-sans">
+          {unitToString[selectedUnit]} LEFT UNTIL DEATH
+        </p>
+        <h1 className="text-red-600 text-4xl font-black font-sans">
+          {Math.floor(recentTime / factors[selectedUnit])}
+        </h1>
+        <p className="text-gray-300 text-lg font-bold font-sans">
+          WASTED THIS WEEK
+        </p>
+        <h1 className="text-red-600 text-4xl font-black font-sans">
+          {Math.floor(allTime / factors[selectedUnit])}
+        </h1>
+        <p className="text-gray-300 text-lg font-bold font-sans">
+          WASTED IN TOTAL
         </p>
       </div>
     </div>
