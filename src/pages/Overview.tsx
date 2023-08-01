@@ -3,6 +3,7 @@ import { getLocalSetting, setLocalSetting } from "../service/storageUtils";
 import { sessionStore } from "../db/db";
 import { getMsLeft } from "../utils";
 import { UnitSelector } from "../components/UnitSelector";
+import { SettingsButton } from "../components/SettingsButton";
 
 export type TimeUnit = "H" | "M" | "S";
 
@@ -69,6 +70,9 @@ export function OverviewPage() {
 
   return (
     <div className="flex flex-col items-center">
+      <div className="absolute top-4 right-4">
+        <SettingsButton />
+      </div>
       <div className="mt-5">
         <UnitSelector
           selectedUnit={selectedUnit}
