@@ -7,6 +7,7 @@ import {
   setSession,
 } from "../storageUtils";
 import { useStore } from "agile-store";
+import { getPercentUsed } from "../../utils";
 
 // Tab event listeners
 export const onUpdated = chrome.tabs.onUpdated.addListener(
@@ -56,6 +57,9 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
           timeEnded: undefined,
         });
 
+        // Get user birthyear
+        const birthYear = await getLocalSetting("birthYear");
+
         // Fire notif
         const options: chrome.notifications.NotificationOptions<true> = {
           buttons: [
@@ -65,10 +69,11 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
             },
           ],
           iconUrl: "skull256.png",
-          message: `You don't have much time left!`,
-          title: "ALERT",
+          message:
+            "This is how much time you've used. Let's use what's left more wisely, eh?",
+          title: "Your time here is finite.",
           type: "progress",
-          progress: 90,
+          progress: Math.ceil(getPercentUsed(birthYear) * 100),
           priority: 2,
           requireInteraction: true,
           silent: false,
