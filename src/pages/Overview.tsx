@@ -79,14 +79,14 @@ export function OverviewPage() {
           onButtonPress={onButtonPress}
         />
       </div>
-      <div className="mt-5 flex flex-col items-center justify-center">
+      <div className="mt-7 flex flex-col items-center justify-center">
         <h1 className="text-red-600 text-4xl font-black font-sans">
           {converters[selectedUnit](msLeft)}
         </h1>
         <p className="text-gray-300 text-md font-bold font-sans">
           {unitToString[selectedUnit]} LEFT UNTIL DEATH
         </p>
-        <hr className="w-full mt-2 border-gray-600"></hr>
+        <hr className="w-full mt-5 border-gray-600"></hr>
         <h1 className="text-red-600 text-3xl font-black font-sans mt-4">
           {converters[selectedUnit](recentTime)}
         </h1>
