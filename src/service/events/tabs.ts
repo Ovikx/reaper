@@ -1,16 +1,19 @@
-import { SiteBlacklist } from "../types";
 import { elementContained } from "../helpers";
 import { dbConfig, sessionStore } from "../../db/db";
-import { getSession, getTempWhitelist, setSession } from "../storageUtils";
+import {
+  getLocalSetting,
+  getSession,
+  getTempWhitelist,
+  setSession,
+} from "../storageUtils";
 import { useStore } from "agile-store";
 
 // Tab event listeners
 export const onUpdated = chrome.tabs.onUpdated.addListener(
   async (tabId, changeInfo, tab) => {
     // Load the user-defined blacklist
-    const blacklist = (
-      (await chrome.storage.local.get("blacklist")) as SiteBlacklist
-    ).blacklist;
+    const blacklist = await getLocalSetting("blacklist");
+    console.log(blacklist);
 
     if (changeInfo.status == "complete" && tab.id) {
       // Get the matched blacklist website for storage purposes
@@ -85,6 +88,8 @@ export const onRemoved = chrome.tabs.onRemoved.addListener(async (tabId) => {
       .add({ ...session, timeEnded: Date.now() })
       .then(() => console.log(`Added ${session.id} to store on tab remove`));
     chrome.storage.session.remove(tabId.toString());
+
+    // Remove the notification
     chrome.notifications.clear(tabId.toString());
   }
 });

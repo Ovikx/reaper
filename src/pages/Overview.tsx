@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "preact/hooks";
-import { getBirthYear } from "../service/storageUtils";
+import { getLocalSetting, setLocalSetting } from "../service/storageUtils";
 import { sessionStore } from "../db/db";
 import { getMsLeft } from "../utils";
 import { UnitSelector } from "../components/UnitSelector";
@@ -8,10 +8,10 @@ export type TimeUnit = "H" | "M" | "S";
 
 const weekMs = 604800000;
 const interval = 1000; // ms
-const factors: Record<TimeUnit, number> = {
-  H: 1000 * 60 * 60,
-  M: 1000 * 60,
-  S: 1000,
+const converters: Record<TimeUnit, (ms: number) => number> = {
+  H: (ms) => Math.ceil((ms / (1000 * 60 * 60)) * 10) / 10,
+  M: (ms) => Math.ceil(ms / (1000 * 60)),
+  S: (ms) => Math.ceil(ms / 1000),
 };
 
 const unitToString: Record<TimeUnit, string> = {
@@ -26,6 +26,7 @@ export function OverviewPage() {
   const [msLeft, setMsLeft] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState<TimeUnit>("S");
 
+  // DB fetch
   useMemo(() => {
     sessionStore.getMany("timeEnded", { upper: Date.now() }).then((res) => {
       let totalAll = 0;
@@ -45,6 +46,7 @@ export function OverviewPage() {
     });
   }, []);
 
+  // Timer
   useEffect(() => {
     if (!msLeft) return;
     const intervalId = setInterval(() => {
@@ -54,34 +56,41 @@ export function OverviewPage() {
     return () => clearInterval(intervalId);
   }, [msLeft]);
 
-  getBirthYear().then((res) => {
-    setMsLeft(getMsLeft(res));
-  });
+  // Load settings
+  useEffect(() => {
+    getLocalSetting("birthYear").then((res) => setMsLeft(getMsLeft(res)));
+    getLocalSetting("timeUnit").then((res) => setSelectedUnit(res));
+  }, []);
+
+  const onButtonPress = (unit: TimeUnit) => {
+    setSelectedUnit(unit);
+    setLocalSetting("timeUnit", unit);
+  };
 
   return (
     <div className="flex flex-col items-center">
       <div className="mt-5">
         <UnitSelector
           selectedUnit={selectedUnit}
-          setSelectedUnit={setSelectedUnit}
+          onButtonPress={onButtonPress}
         />
       </div>
       <div className="mt-5 flex flex-col items-center justify-center">
         <h1 className="text-red-600 text-4xl font-black font-sans">
-          {Math.floor(msLeft / factors[selectedUnit])}
+          {converters[selectedUnit](msLeft)}
         </h1>
         <p className="text-gray-300 text-md font-bold font-sans">
           {unitToString[selectedUnit]} LEFT UNTIL DEATH
         </p>
         <hr className="w-full mt-2 border-gray-600"></hr>
         <h1 className="text-red-600 text-3xl font-black font-sans mt-4">
-          {Math.ceil(recentTime / factors[selectedUnit])}
+          {converters[selectedUnit](recentTime)}
         </h1>
         <p className="text-gray-300 text-md font-semibold font-sans">
           WASTED THIS WEEK
         </p>
         <h1 className="text-red-600 text-3xl font-black font-sans mt-4">
-          {Math.ceil(allTime / factors[selectedUnit])}
+          {converters[selectedUnit](allTime)}
         </h1>
         <p className="text-gray-300 text-md font-semibold font-sans">
           WASTED IN TOTAL

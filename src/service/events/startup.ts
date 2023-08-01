@@ -2,6 +2,7 @@ import { createStores } from "agile-store";
 import { sessionStore } from "../../db/db";
 import defaultBlacklist from "../defaultBlacklist.json";
 import { defaultBirthYear } from "../../constants";
+import { LocalSettings } from "../types";
 
 export const onStartup = chrome.runtime.onStartup.addListener(() => {
   createStores("am", 1, [sessionStore]);
@@ -10,7 +11,17 @@ export const onStartup = chrome.runtime.onStartup.addListener(() => {
 
 export const onInstalled = chrome.runtime.onInstalled.addListener(() => {
   createStores("am", 1, [sessionStore]);
-  chrome.storage.local.set({ blacklist: defaultBlacklist.blacklist });
   chrome.storage.session.set({ whitelist: [] });
-  chrome.storage.local.set({ birthYear: defaultBirthYear() });
+
+  // Local settings
+  const initialSettings: LocalSettings = {
+    blacklist: defaultBlacklist.blacklist,
+    birthYear: defaultBirthYear(),
+    timeUnit: "M",
+  };
+
+  chrome.storage.local
+    .set(initialSettings)
+    .then(() => console.log("worked"))
+    .catch((err) => console.log(`no work: ${err}`));
 });

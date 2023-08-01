@@ -1,4 +1,5 @@
 import { Session } from "../types/types";
+import { LocalSettings } from "./types";
 
 /**
  * Gets a session associated with a Chrome tab from Chrome session storage
@@ -41,4 +42,29 @@ export async function addToTempWhitelist(url: string) {
 
 export async function getBirthYear(): Promise<number> {
   return (await chrome.storage.local.get("birthYear"))["birthYear"];
+}
+
+/**
+ * Changes a setting's value
+ * @param setting Setting name
+ * @param value New value of the setting
+ * @returns Void
+ */
+export async function setLocalSetting<T extends keyof LocalSettings>(
+  setting: T,
+  value: LocalSettings[T],
+): Promise<void> {
+  return await chrome.storage.local.set({ [setting]: value });
+}
+
+/**
+ * Gets a setting from Chrome's local storage
+ * @param setting Name of the setting to retrieve
+ * @returns Promise that resolves to the retrieved setting
+ */
+export async function getLocalSetting<T extends keyof LocalSettings>(
+  setting: T,
+): Promise<LocalSettings[T]> {
+  console.log(await chrome.storage.local.get(setting));
+  return (await chrome.storage.local.get(setting))[setting];
 }

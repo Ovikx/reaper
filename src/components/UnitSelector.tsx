@@ -3,10 +3,13 @@ import { TimeUnit } from "../pages/Overview";
 
 interface Props {
   selectedUnit: TimeUnit;
-  setSelectedUnit: (unit: TimeUnit) => void;
+  onButtonPress: (unit: TimeUnit) => void;
 }
 
-export function UnitSelector({ selectedUnit, setSelectedUnit }: Props) {
+export function UnitSelector({
+  selectedUnit,
+  onButtonPress: setSelectedUnit,
+}: Props) {
   return (
     <div className="flex flex-row justify-center items-center bg-gray-900 rounded-lg border-gray-700 border-2">
       <UnitButton
