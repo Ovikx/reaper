@@ -5,6 +5,7 @@ import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import { OverviewPage } from "./pages/Overview";
 import { SettingsPage } from "./pages/Settings";
+import { BlacklistPage } from "./pages/Blacklist";
 
 const router = createMemoryRouter([
   {
@@ -14,6 +15,10 @@ const router = createMemoryRouter([
   {
     path: "/settings",
     element: <SettingsPage />,
+  },
+  {
+    path: "/blacklist",
+    element: <BlacklistPage />,
   },
 ]);
 

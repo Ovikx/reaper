@@ -11,3 +11,23 @@
     -moz-appearance: textfield;
   }
 }
+
+/* width */
+::-webkit-scrollbar {
+  @apply w-1;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  @apply bg-gray-900;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-700 rounded-full;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
