@@ -65,7 +65,7 @@ export function BlacklistPage() {
           value={urlInput}
         />
         <button
-          className="mt-3 px-2 border-2 border-gray-900 fill-gray-100"
+          className="mt-3 px-2 border-2 border-gray-900 fill-gray-400 hover:fill-gray-100"
           onClick={onSubmit}
         >
           <svg
