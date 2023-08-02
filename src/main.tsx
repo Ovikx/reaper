@@ -3,8 +3,8 @@ import { createStores } from "agile-store";
 import { sessionStore } from "./db/db";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import { TestPage } from "./pages/Test";
 import { OverviewPage } from "./pages/Overview";
+import { SettingsPage } from "./pages/Settings";
 
 const router = createMemoryRouter([
   {
@@ -12,8 +12,8 @@ const router = createMemoryRouter([
     element: <OverviewPage />,
   },
   {
-    path: "/test",
-    element: <TestPage />,
+    path: "/settings",
+    element: <SettingsPage />,
   },
 ]);
 

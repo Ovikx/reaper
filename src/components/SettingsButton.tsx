@@ -1,6 +1,9 @@
+import { useNavigate } from "react-router-dom";
+
 export function SettingsButton() {
+  const navigate = useNavigate();
   return (
-    <button>
+    <button onClick={() => navigate("/settings")}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="24"
