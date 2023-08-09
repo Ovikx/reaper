@@ -7,15 +7,15 @@ import manifest from "./public/manifest.json";
 export default defineConfig(() => {
   const browser = process.env.TARGET_BROWSER;
   if (browser === undefined) {
-      throw new Error("TARGET_BROWSER is not defined");
+    throw new Error("TARGET_BROWSER is not defined");
   }
   if (browser !== "chrome" && browser !== "firefox") {
-      throw new Error(`TARGET_BROWSER is not supported: ${browser}`);
+    throw new Error(`TARGET_BROWSER is not supported: ${browser}`);
   }
   if (browser === "firefox") {
-    manifest.background["scripts"] = ["src/service/mainWorker.ts"]
+    manifest.background["scripts"] = ["src/service/mainWorker.ts"];
   } else {
-    manifest.background["service_worker"] = "src/service/mainWorker.ts"
+    manifest.background["service_worker"] = "src/service/mainWorker.ts";
   }
 
   return {
@@ -26,11 +26,11 @@ export default defineConfig(() => {
       }),
     ],
     build: {
-      outDir: './dist/' + browser,
+      outDir: "./dist/" + browser,
       rollupOptions: {
         output: {
-          entryFileNames: '[name].js',
-          chunkFileNames: '[name].js',
+          entryFileNames: "[name].js",
+          chunkFileNames: "[name].js",
           assetFileNames: "[name].[ext]",
         },
       },
