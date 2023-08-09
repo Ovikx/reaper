@@ -1,5 +1,6 @@
 import { Session } from "../types/types";
 import { LocalSettings } from "./types";
+import browser from "webextension-polyfill";
 
 /**
  * Gets a session associated with a Chrome tab from Chrome session storage
@@ -7,7 +8,7 @@ import { LocalSettings } from "./types";
  * @returns Promise that resovles to either a Session or undefined, if nothing was found
  */
 export async function getSession(tabId: string): Promise<Session | undefined> {
-  return (await chrome.storage.session.get(tabId))[tabId];
+  return (await browser.storage.session.get(tabId))[tabId];
 }
 
 /**
@@ -19,14 +20,14 @@ export async function setSession(
   tabId: string,
   session: Session,
 ): Promise<void> {
-  await chrome.storage.session.set({ [tabId]: session });
+  await browser.storage.session.set({ [tabId]: session });
 }
 
 /**
  * Gets the temporary website whitelist from Chrome session storage
  */
 export async function getTempWhitelist(): Promise<string | undefined> {
-  return (await chrome.storage.session.get("whitelist"))["whitelist"];
+  return (await browser.storage.session.get("whitelist"))["whitelist"];
 }
 
 /**
@@ -35,13 +36,13 @@ export async function getTempWhitelist(): Promise<string | undefined> {
  */
 export async function addToTempWhitelist(url: string) {
   const whitelist = await getTempWhitelist();
-  await chrome.storage.session.set({
+  await browser.storage.session.set({
     whitelist: [...(whitelist ?? []), url],
   });
 }
 
 export async function getBirthYear(): Promise<number> {
-  return (await chrome.storage.local.get("birthYear"))["birthYear"];
+  return (await browser.storage.local.get("birthYear"))["birthYear"];
 }
 
 /**
@@ -54,7 +55,7 @@ export async function setLocalSetting<T extends keyof LocalSettings>(
   setting: T,
   value: LocalSettings[T],
 ): Promise<void> {
-  return await chrome.storage.local.set({ [setting]: value });
+  return await browser.storage.local.set({ [setting]: value });
 }
 
 /**
@@ -65,6 +66,6 @@ export async function setLocalSetting<T extends keyof LocalSettings>(
 export async function getLocalSetting<T extends keyof LocalSettings>(
   setting: T,
 ): Promise<LocalSettings[T]> {
-  console.log(await chrome.storage.local.get(setting));
-  return (await chrome.storage.local.get(setting))[setting];
+  console.log(await browser.storage.local.get(setting));
+  return (await browser.storage.local.get(setting))[setting];
 }

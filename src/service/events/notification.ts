@@ -3,13 +3,14 @@ import {
   getSession,
   getTempWhitelist,
 } from "../storageUtils";
+import browser from "webextension-polyfill";
 
-export const onButtonClicked = chrome.notifications.onButtonClicked.addListener(
+export const onButtonClicked = browser.notifications.onButtonClicked.addListener(
   async (notificationId, buttonIndex) => {
     switch (buttonIndex) {
       // User complies to close tab
       case 0: {
-        chrome.tabs
+        browser.tabs
           .remove(parseInt(notificationId))
           .catch(() =>
             console.log(

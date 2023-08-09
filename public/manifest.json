@@ -13,7 +13,6 @@
     "default_title": "Active Mortality"
   },
   "background": {
-    "service_worker": "worker.js",
     "type": "module"
   },
   "permissions": ["tabs", "storage", "notifications", "activeTab"],

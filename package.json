@@ -5,25 +5,33 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "tsc && cross-env TARGET_BROWSER=firefox vite build && cross-env TARGET_BROWSER=chrome vite build",
+    "build:firefox": "tsc && cross-env TARGET_BROWSER=firefox vite build",
+    "build:chrome": "tsc && cross-env TARGET_BROWSER=chrome vite build",
+    "preview": "vite preview",
+    "serve:firefox": "web-ext run --start-url \"about:debugging#/runtime/this-firefox\"  --source-dir ./dist/firefox",
+    "serve:chrome": "web-ext run -t chromium --start-url \"https://example.com\" --source-dir ./dist/chrome"
   },
   "dependencies": {
+    "@samrum/vite-plugin-web-extension": "^5.0.0",
     "@types/chrome": "^0.0.242",
     "agile-store": "^0.4.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
     "preact": "^10.15.1",
     "react-router-dom": "^6.14.2",
-    "sort-by": "^1.2.0"
+    "sort-by": "^1.2.0",
+    "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
     "@preact/preset-vite": "^2.5.0",
+    "@types/webextension-polyfill": "^0.10.1",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "autoprefixer": "^10.4.14",
+    "cross-env": "^7.0.3",
     "eslint": "^8.45.0",
     "eslint-plugin-react": "^7.32.2",
     "husky": "^8.0.3",
