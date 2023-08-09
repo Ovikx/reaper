@@ -41,5 +41,12 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Build with Vite
+      - name: Build with Vite for Chrome
         run: npx vite build
+        env:
+          TARGET_BROWSER: chrome
+
+      - name: Build with Vite for Firefox
+        run: npx vite build
+        env:
+          TARGET_BROWSER: firefox

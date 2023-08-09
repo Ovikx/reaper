@@ -8,9 +8,10 @@ import {
 } from "../storageUtils";
 import { useStore } from "agile-store";
 import { getPercentUsed } from "../../utils";
+import browser from "webextension-polyfill";
 
 // Tab event listeners
-export const onUpdated = chrome.tabs.onUpdated.addListener(
+export const onUpdated = browser.tabs.onUpdated.addListener(
   async (tabId, changeInfo, tab) => {
     // Load the user-defined blacklist
     const blacklist = await getLocalSetting("blacklist");
@@ -25,7 +26,7 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
       // If the tab is already in the cache, there's a possibility we can end the session
       // Only end the session if the user goes to a different site
       if (currentSession && currentSession.url != matched) {
-        chrome.storage.session.remove(tab.id.toString());
+        browser.storage.session.remove(tab.id.toString());
         // TODO: only add to store if site isn't in the whitelist
         (await useStore(sessionStore, dbConfig))
           .add({
@@ -38,7 +39,7 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
 
         // Clear active notification if new URL is clean
         if (matched == undefined) {
-          chrome.notifications.clear(tab.id.toString());
+          browser.notifications.clear(tab.id.toString());
         }
       }
 
@@ -79,22 +80,22 @@ export const onUpdated = chrome.tabs.onUpdated.addListener(
           silent: false,
         };
 
-        chrome.notifications.create(tabId.toString(), options);
+        browser.notifications.create(tabId.toString(), options);
       }
     }
   },
 );
 
-export const onRemoved = chrome.tabs.onRemoved.addListener(async (tabId) => {
+export const onRemoved = browser.tabs.onRemoved.addListener(async (tabId) => {
   const session = await getSession(tabId.toString());
   if (session) {
     // TODO: check that session url isn't in the whitelist before adding to store
     (await useStore(sessionStore, dbConfig))
       .add({ ...session, timeEnded: Date.now() })
       .then(() => console.log(`Added ${session.id} to store on tab remove`));
-    chrome.storage.session.remove(tabId.toString());
+    browser.storage.session.remove(tabId.toString());
 
     // Remove the notification
-    chrome.notifications.clear(tabId.toString());
+    browser.notifications.clear(tabId.toString());
   }
 });
